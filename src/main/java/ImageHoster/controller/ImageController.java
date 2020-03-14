@@ -1,8 +1,10 @@
 package ImageHoster.controller;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
+import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class ImageController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private CommentService commentService;
+
     //This method displays all the images in the user home page after successful login
     @RequestMapping("images")
     public String getUserImages(Model model) {
@@ -50,6 +55,8 @@ public class ImageController {
         Image image = imageService.getImage(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        List<Comment> comments=commentService.getAllComments(image);
+        model.addAttribute("comments",comments);
         return "images/image";
     }
 
@@ -105,6 +112,8 @@ public class ImageController {
         else {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("editError", error);
+            List<Comment> comments=commentService.getAllComments(image);
+            model.addAttribute("comments",comments);
             model.addAttribute("image", imageService.getImage(imageId));
             return "images/image";
 
@@ -142,7 +151,7 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        return "redirect:/images/" + updatedImage.getId();
     }
 
 
@@ -160,6 +169,8 @@ public class ImageController {
         else {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("deleteError",error);
+            List<Comment> comments=commentService.getAllComments(imageService.getImage(imageId));
+            model.addAttribute("comments",comments);
             model.addAttribute("image", imageService.getImage(imageId));
             return  "images/image";
         }
