@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Controller
@@ -41,18 +43,21 @@ public class UserController {
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
     public String registerUser(User user, Model model) {
-        String error =userService.isValid(user.getPassword());
-        System.out.println(user.getPassword() + error);
-        if(error=="")
-        {
+
+        String enteredPassword = user.getPassword();
+
+        Boolean validationResult = validatePassword(enteredPassword);
+        if (validationResult) {
             userService.registerUser(user);
-            return "redirect:/users/login";
-        }else {
-            User newUser = new User();
+            return "users/login";
+        }
+        else {
+            user = new User();
             UserProfile profile = new UserProfile();
             user.setProfile(profile);
-            model.addAttribute("User", newUser);
-            model.addAttribute("passwordTypeError",error);
+            model.addAttribute("User", user);
+            String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
+            model.addAttribute("passwordTypeError", error);
             return "users/registration";
         }
     }
@@ -90,5 +95,14 @@ public class UserController {
         List<Image> images = imageService.getAllImages();
         model.addAttribute("images", images);
         return "index";
+    }
+
+    public Boolean validatePassword(String password) {
+
+        String passwordPattern = "((?=.*\\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z\\d]).{3,})";
+        Pattern pattern = Pattern.compile(passwordPattern);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+
     }
 }

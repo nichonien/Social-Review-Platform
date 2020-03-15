@@ -50,7 +50,7 @@ public class ImageController {
     //Also now you need to add the tags of an image in the Model type object
     //Here a list of tags is added in the Model type object
     //this list is then sent to 'images/image.html' file and the tags are displayed
-    @RequestMapping("/images/{id}")
+    @RequestMapping("/images/{id}/{title}")
     public String showImage(@PathVariable("id") Integer id, Model model) {
         Image image = imageService.getImage(id);
         model.addAttribute("image", image);
@@ -151,7 +151,7 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getId();
+        return "redirect:/images/" + updatedImage.getId() + "/" + updatedImage.getTitle();
     }
 
 
@@ -167,7 +167,7 @@ public class ImageController {
             return "redirect:/images";
         }
         else {
-            String error = "Only the owner of the image can edit the image";
+            String error = "Only the owner of the image can delete the image";
             model.addAttribute("deleteError",error);
             List<Comment> comments=commentService.getAllComments(imageService.getImage(imageId));
             model.addAttribute("comments",comments);

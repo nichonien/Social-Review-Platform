@@ -5,6 +5,7 @@ import ImageHoster.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -15,6 +16,7 @@ public class UserService {
 
     //Call the registerUser() method in the UserRepository class to persist the user record in the database
     public void registerUser(User newUser) {
+
         userRepository.registerUser(newUser);
     }
 
@@ -32,33 +34,6 @@ public class UserService {
         } else {
             return null;
         }
-    }
-
-    public String isValid(String password) {
-
-        String result="";
-
-        Pattern specailCharPatten = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-        Pattern UpperCasePatten = Pattern.compile("[A-Z ]");
-        Pattern lowerCasePatten = Pattern.compile("[a-z ]");
-        Pattern digitCasePatten = Pattern.compile("[0-9 ]");
-
-        boolean flag=true;
-
-        if (!specailCharPatten.matcher(password).find()) {
-            flag=false;
-        }
-        if (!lowerCasePatten.matcher(password).find()) {
-            flag=false;
-        }
-        if (!digitCasePatten.matcher(password).find()) {
-            flag=false;
-        }
-        if(flag==false) {
-            result="Password must contain atleast 1 alphabet, 1 number & 1 special character";
-        }
-        return result;
-
     }
 
 }

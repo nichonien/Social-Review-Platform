@@ -40,6 +40,6 @@ public class CommentController {
         model.addAttribute("image",imageService.getImage(id));
         List<Comment> comments=commentService.getAllComments(imageService.getImage(id));
         model.addAttribute("comments",comments);
-        return "images/image";
+        return "redirect:/images/" + id + "/" + title;
     }
 }

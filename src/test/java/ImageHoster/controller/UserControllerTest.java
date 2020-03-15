@@ -79,7 +79,7 @@ public class UserControllerTest {
         user.setProfile(userProfile);
         user.setId(1);
         user.setUsername("Abhi");
-        user.setPassword("password1@");
+        user.setPassword("password@1");
 
 
         this.mockMvc.perform(post("/users/registration")
